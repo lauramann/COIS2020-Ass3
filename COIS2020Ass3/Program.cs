@@ -7,8 +7,9 @@ namespace COIS2020Ass3
 	{
 		public static void Main(string[] args)
 		{
+			FileSystem cake = new FileSystem();
 			//instance of FileSystem class
-			FileSystem print = new FileSystem();
+			FileSystem command = new FileSystem();
 			//userInput variable outside of loop
 			char userInput;
 			//main loop so user can keep adding new directories and files until they press quit
@@ -29,18 +30,19 @@ namespace COIS2020Ass3
 							string directory;
 							Console.WriteLine("Where would you like to create your directory?");
 							//prints file system so user can see where they want to make a new directory
-							print.PrintFileSystem();
+							command.PrintFileSystem();
 							directory = Convert.ToString(Console.ReadLine());
 							break;
 
 						//User wants to make a new file
 						case 'F':
 							string file;
-							Console.WriteLine("Enter the name of your file:");
 							Console.WriteLine("Where would you like to create your file?");
 							//prints file system so user can see where they want to make a new file
-							print.PrintFileSystem();
+							command.PrintFileSystem();
 							file = Convert.ToString(Console.ReadLine());
+							command.AddFile(ref file);
+
 							break;
 					}
 				}
@@ -57,7 +59,19 @@ namespace COIS2020Ass3
 		private List<string> files; //need to define List somewhere else by saying file = new List<string>
 		public Node leftMostChild;
 		public Node rightMostSibling;
+		public string Item { get; set; } //
 
+		//argument for address of file or directory
+		public  Node(string item)
+		{
+			Item = item;
+		}
+
+		public Node()
+		{
+		}
+
+		//returns files list so the other class can access it
 		public List<string> GetList()
 		{
 			return files;
@@ -67,25 +81,23 @@ namespace COIS2020Ass3
 
 	public class FileSystem
 	{
+		//creates instance of Node class
 		Node fileSystem = new Node();
-		private Node root = null; //empty root
+		//reference to the root of the file system
+		private Node root { get; set; }
 
 		//Creates a file system with a root directory
 		public FileSystem()
 		{
-			Node tempVar = new Node(); //create new instance of the Node class
+			//creates new list for files 
 			List<string> files = fileSystem.GetList(); //create list to access list created in Node
-
-
+			files.Add("dexter");
 		}
 
 		//adds a file at the given address
 		//returns false if the file already exists or the path is undefined; true otherwise
-		public bool AddFile(string address)
+		public bool AddFile(ref string address)
 		{
-			if (root = null)
-				
-			
 			return true;
 		}
 
@@ -100,6 +112,14 @@ namespace COIS2020Ass3
 		//returns false if the directory already exists or the path is undefined; true otherwise
 		public bool AddDirectory(string address)
 		{
+			Node curr;
+			bool inserted = false;
+			if (root == null)
+			{
+				root = new Node(address);
+				inserted = true;
+			}
+			return inserted;
 			return true;
 		}
 
