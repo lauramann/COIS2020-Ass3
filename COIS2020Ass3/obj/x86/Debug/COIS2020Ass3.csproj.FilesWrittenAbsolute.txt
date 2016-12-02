@@ -1,0 +1,5 @@
+/Users/lauramann/Projects/COIS2020Ass3/COIS2020Ass3/obj/x86/Debug/.NETFramework,Version=v4.5.AssemblyAttribute.cs
+/Users/lauramann/Projects/COIS2020Ass3/COIS2020Ass3/bin/Debug/COIS2020Ass3.exe.mdb
+/Users/lauramann/Projects/COIS2020Ass3/COIS2020Ass3/bin/Debug/COIS2020Ass3.exe
+/Users/lauramann/Projects/COIS2020Ass3/COIS2020Ass3/obj/x86/Debug/COIS2020Ass3.exe
+/Users/lauramann/Projects/COIS2020Ass3/COIS2020Ass3/obj/x86/Debug/COIS2020Ass3.exe.mdb
