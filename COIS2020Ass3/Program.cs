@@ -7,7 +7,6 @@ namespace COIS2020Ass3
 	{
 		public static void Main(string[] args)
 		{
-			FileSystem cake = new FileSystem();
 			//instance of FileSystem class
 			FileSystem command = new FileSystem();
 			//userInput variable outside of loop
@@ -67,10 +66,6 @@ namespace COIS2020Ass3
 			Item = item;
 		}
 
-		public Node()
-		{
-		}
-
 		//returns files list so the other class can access it
 		public List<string> GetList()
 		{
@@ -82,16 +77,31 @@ namespace COIS2020Ass3
 	public class FileSystem
 	{
 		//creates instance of Node class
-		Node fileSystem = new Node();
+		//Node fileSystem = new Node("/");
 		//reference to the root of the file system
 		private Node root { get; set; }
+
+		public DirectoryTree()
+		{
+			root = new Node("/");    // Empty BST
+		}
+
+		static string[] Seperator(string s)
+		{
+			//This will separate all the words with slashes
+			string[] words = s.Split('/');
+			//foreach (string word in words)
+			//{
+			//	Console.WriteLine(word);
+			//}
+			return words;
+		}
 
 		//Creates a file system with a root directory
 		public FileSystem()
 		{
 			//creates new list for files 
 			List<string> files = fileSystem.GetList(); //create list to access list created in Node
-			files.Add("dexter");
 		}
 
 		//adds a file at the given address
