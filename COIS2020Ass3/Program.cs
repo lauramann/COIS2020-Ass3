@@ -27,10 +27,12 @@ namespace COIS2020Ass3
 						//User wants to make a new directory
 						case 'D':
 							string directory;
-							Console.WriteLine("Where would you like to create your directory?");
+							Console.WriteLine("Please enter the path of your new directory");
 							//prints file system so user can see where they want to make a new directory
 							command.PrintFileSystem();
 							directory = Convert.ToString(Console.ReadLine());
+							//seperates address so there are no slashes
+							command.Seperator(directory);
 							break;
 
 						//User wants to make a new file
@@ -39,6 +41,7 @@ namespace COIS2020Ass3
 							Console.WriteLine("Where would you like to create your file?");
 							//prints file system so user can see where they want to make a new file
 							command.PrintFileSystem();
+							//seperates address so there are no slashes
 							file = Convert.ToString(Console.ReadLine());
 							command.AddFile(ref file);
 
@@ -55,7 +58,7 @@ namespace COIS2020Ass3
 	class Node
 	{
 		public string directory;
-		private List<string> files; //need to define List somewhere else by saying file = new List<string>
+		private List<string> files; //need to  define List somewhere else by saying file = new List<string>
 		public Node leftMostChild;
 		public Node rightMostSibling;
 		public string Item { get; set; } //
@@ -81,27 +84,28 @@ namespace COIS2020Ass3
 		//reference to the root of the file system
 		private Node root { get; set; }
 
-		public DirectoryTree()
-		{
-			root = new Node("/");    // Empty BST
-		}
+		//public FileSyste DirectoryTree()
+		//{
+		//	root = new Node("/");    // Empty BST
+		//}
 
-		static string[] Seperator(string s)
+		public string[] Seperator(string s)
 		{
 			//This will separate all the words with slashes
 			string[] words = s.Split('/');
-			//foreach (string word in words)
-			//{
-			//	Console.WriteLine(word);
-			//}
+			foreach (string word in words)
+			{
+				Console.WriteLine(word);
+			}
 			return words;
 		}
 
 		//Creates a file system with a root directory
 		public FileSystem()
 		{
+			root = new Node("/");    // Empty BST
 			//creates new list for files 
-			List<string> files = fileSystem.GetList(); //create list to access list created in Node
+			List<string> files = root.GetList(); //create list to access list created in Node
 		}
 
 		//adds a file at the given address
@@ -122,15 +126,36 @@ namespace COIS2020Ass3
 		//returns false if the directory already exists or the path is undefined; true otherwise
 		public bool AddDirectory(string address)
 		{
-			Node curr;
-			bool inserted = false;
-			if (root == null)
+			//separates address into an array of the different sections of the address
+			string[] seperatedAddress = Seperator(address);
+			//sets the current node to the root (because you can't change the root)
+			Node curr = root;
+
+			//runs through the indexes in the array except the last one (the new directory)
+			for (int i = 0; i < address.Length - 1; i++)
 			{
-				root = new Node(address);
-				inserted = true;
+				if (curr.leftMostChild != null)
+				{
+					//sets the current node to the left most child
+					curr = curr.leftMostChild;
+					if (curr.Item == seperatedAddress[i]) ;
+					else
+					{
+						while (curr != null)
+						{
+							curr = curr.rightMostSibling;
+							if (curr.Item == seperatedAddress[i])
+								break;
+						}
+					}
+				}
+				else
+					return false;
 			}
-			return inserted;
+			curr = new Node(seperatedAddress[seperatedAddress.Length-1]);
 			return true;
+
+
 		}
 
 		//removes the directory (and its subdirectories) at the given address
@@ -149,7 +174,9 @@ namespace COIS2020Ass3
 		//prints the directories in a pre-order fashion along with their files
 		public void PrintFileSystem()
 		{
-			Console.WriteLine("hello world");
+			string message = "/print/me/please/";
+			Console.WriteLine(message);
+
 		}
 	}
 }
