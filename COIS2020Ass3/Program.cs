@@ -43,7 +43,7 @@ namespace COIS2020Ass3
 							command.PrintFileSystem();
 							//seperates address so there are no slashes
 							file = Convert.ToString(Console.ReadLine());
-							command.AddFile(ref file);
+							command.AddFile(file);
 
 							break;
 					}
@@ -58,37 +58,33 @@ namespace COIS2020Ass3
 	class Node
 	{
 		public string directory;
-		private List<string> files; //need to  define List somewhere else by saying file = new List<string>
+		public List<string> files; //need to  define List somewhere else by saying file = new List<string>
 		public Node leftMostChild { get; set; }
 		public Node rightMostSibling { get; set; }
 		public string Item { get; set; } //
 
+
+
 		//argument for address of file or directory
-		public  Node(string item)
+		public Node(string item)
 		{
 			Item = item;
 			leftMostChild = rightMostSibling = null;
+			files = new List<string>();
 		}
 
-		//returns files list so the other class can access it
-		public List<string> GetList()
-		{
-			return files;
-		}
+		////returns files list so the other class can access it
+		//public List<string> GetList()
+		//{
+		//	return files;
+		//}
 
 	}
 
 	public class FileSystem
 	{
-		//creates instance of Node class
-		//Node fileSystem = new Node("/");
 		//reference to the root of the file system
 		private Node root { get; set; }
-
-		//public FileSyste DirectoryTree()
-		//{
-		//	root = new Node("/");    // Empty BST
-		//}
 
 		public string[] Seperator(string s)
 		{
@@ -97,10 +93,9 @@ namespace COIS2020Ass3
 			string[] words = s.Split(slashes, StringSplitOptions.RemoveEmptyEntries);
 			//foreach (string word in words)
 			//{
-			//	Console.Write(word);
+			//	Console.WriteLine(word);
 			//}
 			return words;
-
 		}
 
 		//Creates a file system with a root directory
@@ -108,13 +103,48 @@ namespace COIS2020Ass3
 		{
 			root = new Node("/");    // Empty BST
 			//creates new list for files 
-			List<string> files = root.GetList(); //create list to access list created in Node
+			//List<string> files = root.GetList(); //create list to access list created in Node
 		}
 
 		//adds a file at the given address
 		//returns false if the file already exists or the path is undefined; true otherwise
-		public bool AddFile(ref string address)
+		public bool AddFile(string address)
 		{
+			//separates address into an array of the different sections of the address
+			string[] seperatedAddress = Seperator(address);
+
+			//sets the current node to the root (because you can't change the root)
+			Node curr = root;
+			//Console.WriteLine(curr.Item);
+
+			//runs through the indexes in the array except the last one (the new directory)
+			for (int i = 0; i < seperatedAddress.Length-1; i++)
+			{
+				if (curr.leftMostChild != null)
+				{
+					//sets the current node to the left most child
+					curr = curr.leftMostChild;
+					//Console.WriteLine(curr.Item);
+					if (curr.Item != seperatedAddress[i])
+					{
+						while (curr.rightMostSibling != null)
+						{
+							curr = curr.rightMostSibling;
+							if (curr.Item == seperatedAddress[i])
+								break;
+						}
+					}
+				}
+				else
+				{
+					
+				}
+			}
+			curr.files.Add(seperatedAddress[seperatedAddress.Length - 1]);
+			foreach (string sheet in curr.files)
+			{
+				Console.WriteLine(sheet);
+			}
 			return true;
 		}
 
@@ -131,11 +161,6 @@ namespace COIS2020Ass3
 		{
 			//separates address into an array of the different sections of the address
 			string[] seperatedAddress = Seperator(address);
-			//foreach (string word in seperatedAddress)
-			//{
-			//	Console.Write(word);
-			//}
-			//Console.WriteLine(seperatedAddress.Length);
 
 			//sets the current node to the root (because you can't change the root)
 			Node curr = root;
@@ -193,22 +218,21 @@ namespace COIS2020Ass3
 			Console.Write(curr.Item);
 			Node temp;
 
-			//while (curr != null)
-			//{
 				while (curr.leftMostChild != null)
 				{
 					//sets the current node to the left most child
 					curr = curr.leftMostChild;
 					temp = curr;
-					Console.Write(curr.Item + '/');
+				Console.Write(curr.Item + '/');
 					while (curr.rightMostSibling != null)
 					{
 						curr = curr.rightMostSibling;
+						temp = curr;
 						Console.Write(curr.Item + '/');
+						curr = temp;
 					}
-					curr = temp;
+				curr = temp;
 				}
-			//}
 
 
 		}
