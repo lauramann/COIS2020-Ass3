@@ -139,11 +139,21 @@ namespace COIS2020Ass3
 				else { }
 			}
 			curr.files.Add(seperatedAddress[seperatedAddress.Length - 1]);
-			foreach (string sheet in curr.files)
-			{
-				Console.WriteLine(sheet);
-			}
+			//foreach (string sheet in curr.files)
+			//{
+			//	Console.WriteLine(sheet);
+			//}
 			return true;
+		}
+
+		public string PrintFileList(Node node)
+		{
+			string a = "";
+			foreach (string sheet in node.files)
+			{
+				a = a + sheet + "\n";
+			}
+			return a;
 		}
 
 		//removes the file at the given address
@@ -217,73 +227,36 @@ namespace COIS2020Ass3
 		//prints the directories in a pre-order fashion along with their files
 		public void PrintFileSystem()
 		{
+			//calls TraverseSystem method
 			Console.WriteLine(TraverseSystem());
-
-			////starts at the root
-			//Node curr = root;
-			//Console.Write(curr.Item);
-			//Node temp;
-
-			//	while (curr.leftMostChild != null)
-			//	{
-			//		//sets the current node to the left most child
-			//		curr = curr.leftMostChild;
-			//		temp = curr;
-			//		Console.Write(curr.Item + '/');
-
-			//		while (curr.rightMostSibling != null)
-			//		{
-			//			curr = curr.rightMostSibling;
-			//			Console.Write(curr.Item + '/');
-			//			temp = curr;
-			//		}
-
-			//	}
 		}
 
-		//public void RecursiveInOrder(Node node, ArrayList path)
-		//{
-		//	if (node == null)
-		//	{
-		//		return;
-		//	}
-		//	path.Add(node.Item);
-
-		//	if (node.leftMostChild == null && node.rightMostSibling == null)
-		//	{
-		//		foreach (string piece in path)
-		//		{
-		//			Console.Write(piece + '/');
-		//		}
-		//		return;
-		//	}
-		//	else
-		//	{
-		//		RecursiveInOrder(node.leftMostChild, new ArrayList(path));
-		//		RecursiveInOrder(node.rightMostSibling, new ArrayList(path));
-		//	}
-		//}
-
-
+		//method to call recursive method that traverses through file system
 		public string TraverseSystem()
 		{
+			//passes root and 0
 			return preorderString(root, 0);
 		}
 
+		//method to traverse through file system
 		private string preorderString(Node currentNode, int depth)
 		{
+			//returns nothing if current node is null
 			if (currentNode == null)
 			{
 				return "";
 			}
 			string s = "";
+			//adds a space before each directory to make it easier to read the file system
 			for (int i = 0; i < depth; i++)
 			{
-				s = s + '-';
+				s = s + " ";
+
 			}
-			return s + currentNode.Item + "\n" +
-				                  preorderString(currentNode.leftMostChild, depth + 1) +
-				                  preorderString(currentNode.rightMostSibling, depth);
+			//recursively calls left child and right sibling on new lines
+			return s + currentNode.Item + "\n" + s + PrintFileList(currentNode) +
+								  preorderString(currentNode.leftMostChild, depth + 1) +
+								  preorderString(currentNode.rightMostSibling, depth);
 		}
 
 	}
