@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace COIS2020Ass3
@@ -55,7 +56,7 @@ namespace COIS2020Ass3
 		}
 	}
 
-	class Node
+	public class Node
 	{
 		public string directory;
 		public List<string> files; //need to  define List somewhere else by saying file = new List<string>
@@ -135,10 +136,7 @@ namespace COIS2020Ass3
 						}
 					}
 				}
-				else
-				{
-					
-				}
+				else { }
 			}
 			curr.files.Add(seperatedAddress[seperatedAddress.Length - 1]);
 			foreach (string sheet in curr.files)
@@ -180,8 +178,16 @@ namespace COIS2020Ass3
 						{
 							curr = curr.rightMostSibling;
 							if (curr.Item == seperatedAddress[i])
+							{
+								curr.rightMostSibling = new Node(seperatedAddress[seperatedAddress.Length - 1]);
+								Console.WriteLine(curr.Item);
 								break;
+							}
 						}
+					}
+					else
+					{
+						
 					}
 				}
 				else
@@ -193,8 +199,6 @@ namespace COIS2020Ass3
 			}
 					//curr = new Node(seperatedAddress[seperatedAddress.Length-1]);
 			return true;
-
-
 		}
 
 		//removes the directory (and its subdirectories) at the given address
@@ -213,28 +217,74 @@ namespace COIS2020Ass3
 		//prints the directories in a pre-order fashion along with their files
 		public void PrintFileSystem()
 		{
-			//starts at the root
-			Node curr = root;
-			Console.Write(curr.Item);
-			Node temp;
+			Console.WriteLine(TraverseSystem());
 
-				while (curr.leftMostChild != null)
-				{
-					//sets the current node to the left most child
-					curr = curr.leftMostChild;
-					temp = curr;
-				Console.Write(curr.Item + '/');
-					while (curr.rightMostSibling != null)
-					{
-						curr = curr.rightMostSibling;
-						temp = curr;
-						Console.Write(curr.Item + '/');
-						curr = temp;
-					}
-				curr = temp;
-				}
+			////starts at the root
+			//Node curr = root;
+			//Console.Write(curr.Item);
+			//Node temp;
 
+			//	while (curr.leftMostChild != null)
+			//	{
+			//		//sets the current node to the left most child
+			//		curr = curr.leftMostChild;
+			//		temp = curr;
+			//		Console.Write(curr.Item + '/');
 
+			//		while (curr.rightMostSibling != null)
+			//		{
+			//			curr = curr.rightMostSibling;
+			//			Console.Write(curr.Item + '/');
+			//			temp = curr;
+			//		}
+
+			//	}
 		}
+
+		//public void RecursiveInOrder(Node node, ArrayList path)
+		//{
+		//	if (node == null)
+		//	{
+		//		return;
+		//	}
+		//	path.Add(node.Item);
+
+		//	if (node.leftMostChild == null && node.rightMostSibling == null)
+		//	{
+		//		foreach (string piece in path)
+		//		{
+		//			Console.Write(piece + '/');
+		//		}
+		//		return;
+		//	}
+		//	else
+		//	{
+		//		RecursiveInOrder(node.leftMostChild, new ArrayList(path));
+		//		RecursiveInOrder(node.rightMostSibling, new ArrayList(path));
+		//	}
+		//}
+
+
+		public string TraverseSystem()
+		{
+			return preorderString(root, 0);
+		}
+
+		private string preorderString(Node currentNode, int depth)
+		{
+			if (currentNode == null)
+			{
+				return "";
+			}
+			string s = "";
+			for (int i = 0; i < depth; i++)
+			{
+				s = s + '-';
+			}
+			return s + currentNode.Item + "\n" +
+				                  preorderString(currentNode.leftMostChild, depth + 1) +
+				                  preorderString(currentNode.rightMostSibling, depth);
+		}
+
 	}
 }
