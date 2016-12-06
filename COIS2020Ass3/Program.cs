@@ -16,9 +16,13 @@ namespace COIS2020Ass3
 			do
 			{
 				//asks user what they want to do
-				Console.WriteLine("Press D to create a new directory, press F to create a new file. Press Q anytime to quit:");
+				Console.WriteLine("Enter any of the following commands:");
+				string str = "D to make a NEW directory@F to make a NEW file@P to REMOVE a directory@R to REMOVE a file@N to see the TOTAL number of files@Q to QUIT";
+				//replaces @ symbols with new lines for nicer display
+				str = str.Replace("@", Environment.NewLine);
+				Console.WriteLine(str);
 				userInput = char.ToUpper(Convert.ToChar(Console.ReadLine()));
-				if (userInput != 'D' && userInput != 'F' && userInput != 'Q')
+				if (userInput != 'D' && userInput != 'F' && userInput != 'P' && userInput != 'R' && userInput != 'N' && userInput != 'Q')
 					Console.WriteLine("Invalid input, try again");
 				else
 				{
@@ -45,7 +49,33 @@ namespace COIS2020Ass3
 							//seperates address so there are no slashes
 							file = Convert.ToString(Console.ReadLine());
 							command.AddFile(file);
+							break;
 
+							//User wants to delete a directory
+						case 'P':
+							string removedirectory;
+							Console.WriteLine("Please enter the directory to remove:");
+							//prints file system so user can see where they want to delte a directory
+							command.PrintFileSystem();
+							removedirectory = Convert.ToString(Console.ReadLine());
+							//seperates address so there are no slashes
+							command.RemoveDirectory(removedirectory);
+							break;
+
+							//User wants to delete a file
+						case 'R':
+							string removefile;
+							Console.WriteLine("Please enter the file to remove:");
+							//prints file system so user can see where they want to delte a directory
+							command.PrintFileSystem();
+							removefile= Convert.ToString(Console.ReadLine());
+							//seperates address so there are no slashes
+							command.RemoveFile(removefile);
+							break;
+
+							//User wants to see the number of files
+						case 'N':
+							command.NumberFiles();
 							break;
 					}
 				}
@@ -58,11 +88,11 @@ namespace COIS2020Ass3
 
 	public class Node
 	{
-		public string directory;
+		public string directory; //directory variable
 		public List<string> files; //need to  define List somewhere else by saying file = new List<string>
-		public Node leftMostChild { get; set; }
-		public Node rightMostSibling { get; set; }
-		public string Item { get; set; } //
+		public Node leftMostChild { get; set; } //left most child variable used throughout program
+		public Node rightMostSibling { get; set; } //right most sibling variable used throughout program
+		public string Item { get; set; } //to store information within node
 
 
 
@@ -73,25 +103,22 @@ namespace COIS2020Ass3
 			leftMostChild = rightMostSibling = null;
 			files = new List<string>();
 		}
-
-		////returns files list so the other class can access it
-		//public List<string> GetList()
-		//{
-		//	return files;
-		//}
-
 	}
 
 	public class FileSystem
 	{
 		//reference to the root of the file system
 		private Node root { get; set; }
+		public int numFiles = 0;
 
+		//method to put address into string and remove slashes
 		public string[] Seperator(string s)
 		{
 			char[] slashes = new char[] { '/' };
 			//This will separate all the words with slashes
 			string[] words = s.Split(slashes, StringSplitOptions.RemoveEmptyEntries);
+
+			//printing used for testing
 			//foreach (string word in words)
 			//{
 			//	Console.WriteLine(word);
@@ -103,8 +130,6 @@ namespace COIS2020Ass3
 		public FileSystem()
 		{
 			root = new Node("/");    // Empty BST
-			//creates new list for files 
-			//List<string> files = root.GetList(); //create list to access list created in Node
 		}
 
 		//adds a file at the given address
@@ -139,10 +164,8 @@ namespace COIS2020Ass3
 				else { }
 			}
 			curr.files.Add(seperatedAddress[seperatedAddress.Length - 1]);
-			//foreach (string sheet in curr.files)
-			//{
-			//	Console.WriteLine(sheet);
-			//}
+			//increases the numfiles counter by 1
+			numFiles++;
 			return true;
 		}
 
@@ -160,6 +183,37 @@ namespace COIS2020Ass3
 		//Returns flase if the file is not found or the path is undefined; true otherwise
 		public bool RemoveFile(string address)
 		{
+			//separates address into an array of the different sections of the address
+			string[] seperatedAddress = Seperator(address);
+
+			//sets the current node to the root (because you can't change the root)
+			Node curr = root;
+			//Console.WriteLine(curr.Item);
+
+			//runs through the indexes in the array except the last one (the new directory)
+			for (int i = 0; i < seperatedAddress.Length - 1; i++)
+			{
+				if (curr.leftMostChild != null)
+				{
+					//sets the current node to the left most child
+					curr = curr.leftMostChild;
+					//Console.WriteLine(curr.Item);
+					if (curr.Item != seperatedAddress[i])
+					{
+						while (curr.rightMostSibling != null)
+						{
+							curr = curr.rightMostSibling;
+							if (curr.Item == seperatedAddress[i])
+								break;
+						}
+					}
+				}
+				else { }
+			}
+			//removes the file at the current node
+			curr.files.Remove(seperatedAddress[seperatedAddress.Length - 1]);
+			//decreases the numfiles counter by 1
+			numFiles--;
 			return true;
 		}
 
@@ -195,10 +249,7 @@ namespace COIS2020Ass3
 							}
 						}
 					}
-					else
-					{
-						
-					}
+					else {}
 				}
 				else
 				{
@@ -215,13 +266,43 @@ namespace COIS2020Ass3
 		//Returns flase if the directory is not found or the path is undefined; true otherwise
 		public bool RemoveDirectory(string address)
 		{
+			//separates address into an array of the different sections of the address
+			string[] seperatedAddress = Seperator(address);
+
+			//sets the current node to the root (because you can't change the root)
+			Node curr = root;
+			//Console.WriteLine(curr.Item);
+
+			//runs through the indexes in the array except the last one (the new directory)
+			for (int i = 0; i < seperatedAddress.Length; i++)
+			{
+				if (curr.leftMostChild != null)
+				{
+					//sets the current node to the left most child
+					curr = curr.leftMostChild;
+					//Console.WriteLine(curr.Item);
+					if (curr.Item != seperatedAddress[i])
+					{
+						while (curr.rightMostSibling != null)
+						{
+							curr = curr.rightMostSibling;
+							if (curr.Item == seperatedAddress[i])
+								break;
+						}
+					}
+				}
+				else { }
+			}
+			//sets 
+			curr.Item = null;
 			return true;
 		}
 
 		//returns the number of files in the file system
 		public int NumberFiles()
 		{
-			return 0;
+			Console.WriteLine(numFiles);
+			return numFiles;
 		}
 
 		//prints the directories in a pre-order fashion along with their files
@@ -239,7 +320,7 @@ namespace COIS2020Ass3
 		}
 
 		//method to traverse through file system
-		private string preorderString(Node currentNode, int depth)
+		public string preorderString(Node currentNode, int depth)
 		{
 			//returns nothing if current node is null
 			if (currentNode == null)
